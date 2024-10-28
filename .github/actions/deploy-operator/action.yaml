@@ -17,24 +17,31 @@ runs:
     shell: bash
     run: |
       cert_manager_version=""
+      args="--set crds.enabled=true"
       kube_min_version=$(kubectl version --output=yaml | yq '.serverVersion.minor')
       if [ ${kube_min_version} -le 21 ]; then
         cert_manager_version="v1.11.5"
+        args="--set installCRDs=true"
       fi
       if [ ${kube_min_version} -le 20 ]; then
         cert_manager_version="v1.10.2"
+        args="--set installCRDs=true"
       fi
       if [ ${kube_min_version} -le 19 ]; then
         cert_manager_version="v1.8.2"
+        args="--set installCRDs=true"
       fi
       if [ ${kube_min_version} -le 18 ]; then
         cert_manager_version="v1.7.3"
+        args="--set installCRDs=true"
       fi
       if [ ${kube_min_version} -le 17 ]; then
         cert_manager_version="v1.6.3"
+        args="--set installCRDs=true"
       fi
       if [ ${kube_min_version} -le 16 ]; then
         cert_manager_version="v1.5.5"
+        args="--set installCRDs=true"
       fi
       if [ ${kube_min_version} -le 15 ]; then
         echo "Kubernetes version is too low, please upgrade to 1.15+"
@@ -47,8 +54,8 @@ runs:
         cert-manager jetstack/cert-manager \
         --namespace cert-manager \
         --create-namespace \
-        --set crds.enabled=true \
-        --version "$cert_manager_version"
+        --version "$cert_manager_version" \
+        $args
   - name: Deploy operator by helm
     shell: bash
     run: |
